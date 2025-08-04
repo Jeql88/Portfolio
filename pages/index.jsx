@@ -1,22 +1,26 @@
-import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import ContactForm from '../components/ContactForm';
+import About from '../components/About';
+import Skills from '../components/Skills';
+import Projects from '../components/Projects';
+import Experience from '../components/Experience';
+import Certifications from '../components/Certifications';
+import Contact from '../components/Contact';
+import Footer from '../components/Footer';
 
 const Home = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <>
+      <Navbar />
       <Hero />
-      <section className="py-20">
-        <h2 className="text-3xl font-bold text-center">Projects</h2>
-        {/* Add project components here */}
-      </section>
-      <ContactForm />
-    </motion.div>
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Certifications />
+      <Contact />
+      <Footer />
+    </>
   );
 };
 
