@@ -69,12 +69,12 @@ const Projects = () => {
           <p className="text-xl text-gray-400">Newest to oldest. Scroll to explore.</p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-10">
-          {/* Left scroll list smaller */}
-          <div className="lg:col-span-5 space-y-24">
+        <div className="grid lg:grid-cols-12 gap-12 xl:gap-16">
+          {/* Left scroll list narrower, aligned to top */}
+          <div className="lg:col-span-4 xl:col-span-5 space-y-20">
             {PROJECTS.map((p) => (
-              <article key={p.id} data-project-id={p.id} className="min-h-screen flex items-center">
-                <div className="max-w-2xl">
+              <article key={p.id} data-project-id={p.id} className="min-h-[80vh] flex items-start">
+                <div className="max-w-xl">
                   <div className="flex items-center gap-3 mb-4">
                     <i className={`${p.icon} text-3xl text-[#93c5fd]`}></i>
                     <span className="px-2 py-1 text-xs rounded bg-[#60a5fa]/20 text-[#93c5fd]">{p.date}</span>
@@ -95,9 +95,9 @@ const Projects = () => {
             ))}
           </div>
 
-          {/* Right sticky slideshow larger, lowered */}
-          <div className="lg:col-span-7">
-            <div ref={detailRef} className="sticky top-28 md:top-32">
+          {/* Right sticky preview wider */}
+          <div className="lg:col-span-8 xl:col-span-7">
+            <div ref={detailRef} className="sticky top-24 md:top-28 lg:top-32">
               <div className="relative rounded-2xl overflow-hidden glass select-none">
                 {/* Main screenshot surface (placeholder) */}
                 <div

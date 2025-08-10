@@ -28,7 +28,7 @@ const Skills = () => {
   const runningRef = useRef(false);
 
   const [startAtMs, setStartAtMs] = useState(0);
-  const [hudSeconds, setHudSeconds] = useState(0); // live timer or final
+  const [hudSeconds, setHudSeconds] = useState(0); // active time only
   const [elapsedFinal, setElapsedFinal] = useState(0);
   const [bestTime, setBestTime] = useState(null);
   const [hits, setHits] = useState({});
@@ -36,6 +36,18 @@ const Skills = () => {
   // runtime objects (no state)
   const targetsRef = useRef([]); // {el,x,y,r, vx,vy, tech, hit}
   const effectsRef = useRef([]); // {x,y,t}
+
+  // Active-time tracking (exclude idle)
+  const lastTsRef = useRef(0);
+  const activeMsRef = useRef(0);
+  const userActiveRef = useRef(false);
+  const idleTimerRef = useRef(null);
+
+  const markActivity = () => {
+    userActiveRef.current = true;
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => { userActiveRef.current = false; }, 1500);
+  };
 
   useEffect(() => { runningRef.current = isRunning; }, [isRunning]);
 
@@ -94,13 +106,14 @@ const Skills = () => {
       el.addEventListener('click', (e) => {
         if (!runningRef.current || obj.hit) return;
         e.stopPropagation();
+        markActivity();
         obj.hit = true;
         el.classList.add('bg-[#93c5fd]/10', 'saturate-0', 'opacity-80');
         effectsRef.current.push({ x: obj.x, y: obj.y, t: 0 });
         setHits((m) => ({ ...m, [tech.key]: (m[tech.key] || 0) + 1 }));
         const allHit = targetsRef.current.every(t => t.hit);
         if (allHit) {
-          const final = (performance.now() - startAtMs) / 1000;
+          const final = activeMsRef.current / 1000;
           setIsRunning(false); runningRef.current = false;
           setElapsedFinal(final);
           setHudSeconds(final);
@@ -136,15 +149,27 @@ const Skills = () => {
 
       // Drift
       if (runningRef.current) {
+        const nowTs = performance.now();
+        let dt = nowTs - lastTsRef.current;
+        if (dt < 0 || dt > 1000) dt = 0; // clamp big gaps from tab sleep
+        lastTsRef.current = nowTs;
+
         for (const t of targetsRef.current) {
-          if (t.hit) continue;
+          if (t.hit) {
+            // Keep hit targets in their final position
+            t.el.style.transform = `translate(${t.x - t.r}px, ${t.y - t.r}px)`;
+            continue;
+          }
           t.x += t.vx; t.y += t.vy;
           if (t.x < t.r || t.x > width - t.r) t.vx *= -1;
           if (t.y < t.r || t.y > height - t.r) t.vy *= -1;
           t.el.style.transform = `translate(${t.x - t.r}px, ${t.y - t.r}px)`;
         }
-        // Update HUD timer deterministically from startAt
-        setHudSeconds(((performance.now() - startAtMs) / 1000));
+        // Count only active interaction time
+        if (userActiveRef.current) {
+          activeMsRef.current += dt;
+        }
+        setHudSeconds(activeMsRef.current / 1000);
       }
 
       // Effects
@@ -179,6 +204,9 @@ const Skills = () => {
     setStartAtMs(now);
     setElapsedFinal(0);
     setHudSeconds(0);
+    activeMsRef.current = 0;
+    lastTsRef.current = performance.now();
+    userActiveRef.current = false;
     setIsRunning(true); runningRef.current = true;
   };
 
@@ -186,6 +214,9 @@ const Skills = () => {
     setIsRunning(false); runningRef.current = false;
     setElapsedFinal(0);
     setHudSeconds(0);
+    activeMsRef.current = 0;
+    userActiveRef.current = false;
+    if (idleTimerRef.current) { clearTimeout(idleTimerRef.current); idleTimerRef.current = null; }
     clearTargets();
   };
 
@@ -196,8 +227,26 @@ const Skills = () => {
       handleStart();
       return;
     }
+    markActivity();
     effectsRef.current.push({ x: e.clientX - rect.left, y: e.clientY - rect.top, t: 0 });
   };
+
+  const handleMouseMove = () => { if (runningRef.current) markActivity(); };
+  const handleMouseDown = () => { if (runningRef.current) markActivity(); };
+
+  // Pause activity when tab not visible
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState !== 'visible') {
+        userActiveRef.current = false;
+      }
+      lastTsRef.current = performance.now();
+    };
+    if (typeof window !== 'undefined') {
+      document.addEventListener('visibilitychange', onVis);
+    }
+    return () => { document.removeEventListener('visibilitychange', onVis); };
+  }, []);
 
   return (
     <section id="skills" className="py-20 bg-[#0b1220]">
@@ -212,7 +261,7 @@ const Skills = () => {
             <button onClick={handleStop} className="px-4 py-2 rounded-md bg-white/10 text-white font-semibold hover:bg-white/20">Stop</button>
           </div>
         </div>
-        <div ref={containerRef} className="relative rounded-2xl overflow-hidden glass cursor-crosshair" style={{ minHeight: '70vh' }} onClick={onArenaClick}>
+        <div ref={containerRef} className="relative rounded-2xl overflow-hidden glass cursor-crosshair" style={{ minHeight: '70vh' }} onClick={onArenaClick} onMouseMove={handleMouseMove} onMouseDown={handleMouseDown}>
           {/* Canvas HUD & effects */}
           <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
           {/* Targets layer */}

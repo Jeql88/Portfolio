@@ -18,7 +18,12 @@ const Navbar = () => {
         }
       };
       anchors.forEach(a => a.addEventListener('click', handler));
-      return () => anchors.forEach(a => a.removeEventListener('click', handler));
+      const onKey = (ev) => { if (ev.key === 'Escape') setOpen(false); };
+      window.addEventListener('keydown', onKey);
+      return () => {
+        anchors.forEach(a => a.removeEventListener('click', handler));
+        window.removeEventListener('keydown', onKey);
+      };
     }
   }, []);
 
@@ -40,7 +45,7 @@ const Navbar = () => {
             <div className="text-2xl font-bold gradient-text">JEL</div>
           </div>
           {!open && (
-            <button aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)} className="relative w-9 h-9">
+            <button type="button" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)} className="relative w-9 h-9">
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 block h-[2px] w-7 bg-white -translate-y-2" />
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 block h-[2px] w-7 bg-white" />
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 block h-[2px] w-7 bg-white translate-y-2" />
@@ -50,14 +55,22 @@ const Navbar = () => {
       </nav>
 
       {/* Overlay Menu */}
-      <div className={`fixed inset-0 z-40 ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+      <div className={`fixed inset-0 z-[60] ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {/* layered background animation */}
-        <div className={`absolute inset-0 bg-[#0a0f1c] ${open ? 'opacity-95' : 'opacity-0'} transition-opacity duration-500`} />
-        <div className={`absolute inset-0 bg-gradient-to-b from-[#0b1c36] to-transparent transform ${open ? 'translate-y-0 scale-100' : '-translate-y-full scale-105'} transition-transform duration-700`} />
+        <div
+          className={`absolute inset-0 z-0 bg-[#0a0f1c] ${open ? 'opacity-95' : 'opacity-0'} transition-opacity duration-500`}
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+        <div
+          className={`absolute inset-0 z-0 bg-gradient-to-b from-[#0b1c36] to-transparent transform ${open ? 'translate-y-0 scale-100' : '-translate-y-full scale-105'} transition-transform duration-700`}
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
 
-        <div className={`relative h-full w-full transition-opacity duration-500 ${open ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`relative z-10 h-full w-full transition-opacity duration-500 ${open ? 'opacity-100' : 'opacity-0'}`} role="dialog" aria-modal="true">
           {open && (
-            <button aria-label="Close menu" onClick={() => setOpen(false)} className="absolute z-50 top-6 right-6 text-white/90 hover:text-white text-3xl">×</button>
+            <button type="button" aria-label="Close menu" onClick={() => setOpen(false)} className="absolute z-50 top-6 right-6 text-white/90 hover:text-white text-3xl">×</button>
           )}
 
           <div className="container mx-auto px-8 md:px-16 lg:px-24 pt-28 md:pt-40 h-full">

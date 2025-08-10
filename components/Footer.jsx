@@ -5,7 +5,7 @@ const Footer = () => (
     <div className="container mx-auto px-6">
       <div className="text-center">
         <div className="text-3xl font-bold gradient-text mb-4">Josh Edward Lui</div>
-        <p className="text-gray-400 mb-6">Full Stack Developer & Innovation Leader</p>
+        <p className="text-gray-400 mb-6">Aspiring Full Stack Developer & Council Leader</p>
         <div className="flex justify-center space-x-6 mb-6">
           <a href="#" className="text-gray-400 hover:text-white transition-colors">
             <i className="fab fa-linkedin text-xl"></i>
