@@ -1,163 +1,124 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+const PROJECTS = [
+  { id: 'p6', title: 'Collaborative Drawing Web App', date: '2025-06', tags: ['React.js', 'Socket.IO', 'MongoDB'], icon: 'fas fa-paint-brush', summary: 'A realtime whiteboard with collaborative drawing, session persistence, and replayable strokes.' },
+  { id: 'p5', title: 'Hotel Management System', date: '2025-05', tags: ['Go', 'Docker', 'GraphQL'], icon: 'fas fa-hotel', summary: 'Microservices booking, containerized services, role-based access, and JWT auth.' },
+  { id: 'p4', title: '2D Roguelike Game', date: '2025-02', tags: ['C#', 'Unity', 'Game Dev'], icon: 'fas fa-gamepad', summary: 'Procedural generation, itemization, and a satisfying combat loop with bosses.' },
+  { id: 'p3', title: 'LAPD Crime Analysis', date: '2024-12', tags: ['SQL Server', 'SSIS', 'Analytics'], icon: 'fas fa-chart-line', summary: 'ETL pipelines with SSIS, star-schema warehouse, and storytelling dashboards.' },
+  { id: 'p2', title: 'IP Telephony System', date: '2024-12', tags: ['Cisco', 'VoIP', 'HSRP'], icon: 'fas fa-network-wired', summary: 'Multi-branch VoIP with HSRP, QoS, dial plans, and resilient network edges.' },
+  { id: 'p1', title: 'University Marketplace System', date: '2024-08', tags: ['PHP', 'MySQL', 'WebSockets'], icon: 'fas fa-shopping-cart', summary: 'Campus e-commerce with real-time chat, escrow-like orders, and admin tools.' },
+].sort((a,b) => (a.date < b.date ? 1 : -1));
+
+const MAX_SLIDES = 5; // placeholder count per project
 
 const Projects = () => {
+  const [activeId, setActiveId] = useState(PROJECTS[0].id);
+  const [slideIdx, setSlideIdx] = useState(0);
+  const detailRef = useRef(null);
+  const swipeRef = useRef({ x: 0, y: 0 });
+  const autoRef = useRef(null);
+
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.gsap && window.ScrollTrigger) {
-      const gsap = window.gsap;
-      const ScrollTrigger = window.ScrollTrigger;
-      gsap.registerPlugin(ScrollTrigger);
-      gsap.utils.toArray('.card-hover').forEach(card => {
-        gsap.fromTo(card,
-          { y: 100, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse'
-            }
-          }
-        );
+    const sections = document.querySelectorAll('[data-project-id]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('data-project-id');
+          setActiveId(id);
+        }
       });
-    }
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0.1 });
+
+    sections.forEach(s => io.observe(s));
+    return () => io.disconnect();
   }, []);
+
+  useEffect(() => {
+    // Reset slide and animate panel when project changes
+    setSlideIdx(0);
+    if (typeof window !== 'undefined' && window.gsap && detailRef.current) {
+      const gsap = window.gsap;
+      gsap.fromTo(detailRef.current, { y: 16, opacity: 0.9 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out' });
+    }
+    // Auto-advance
+    if (autoRef.current) clearInterval(autoRef.current);
+    autoRef.current = setInterval(() => setSlideIdx(i => (i + 1) % MAX_SLIDES), 3500);
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+  }, [activeId]);
+
+  const active = PROJECTS.find(p => p.id === activeId) || PROJECTS[0];
+
+  const handleTouchStart = (e) => {
+    const t = e.touches[0];
+    swipeRef.current = { x: t.clientX, y: t.clientY };
+  };
+  const handleTouchEnd = (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - swipeRef.current.x;
+    const dy = t.clientY - swipeRef.current.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      setSlideIdx((i) => (dx < 0 ? (i + 1) % MAX_SLIDES : (i - 1 + MAX_SLIDES) % MAX_SLIDES));
+    }
+  };
 
   return (
     <section id="projects" className="py-20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 gradient-text">Featured Projects</h2>
-          <p className="text-xl text-gray-400">Innovative solutions and technical achievements</p>
+          <h2 className="text-5xl font-bold mb-4 gradient-text">Projects</h2>
+          <p className="text-xl text-gray-400">Newest to oldest. Scroll to explore.</p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Project 1 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-paint-brush text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">Collaborative Drawing Web App</h3>
-            <p className="text-gray-400 mb-4">Real-time collaborative whiteboard using HTML5 Canvas API, React.js, and Socket.IO with MongoDB for session persistence.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">React.js</span>
-              <span className="px-2 py-1 bg-green-600 bg-opacity-20 rounded text-xs">Socket.IO</span>
-              <span className="px-2 py-1 bg-yellow-600 bg-opacity-20 rounded text-xs">MongoDB</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">May - June 2025</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
+
+        <div className="grid lg:grid-cols-12 gap-10">
+          {/* Left scroll list smaller */}
+          <div className="lg:col-span-5 space-y-24">
+            {PROJECTS.map((p) => (
+              <article key={p.id} data-project-id={p.id} className="min-h-screen flex items-center">
+                <div className="max-w-2xl">
+                  <div className="flex items-center gap-3 mb-4">
+                    <i className={`${p.icon} text-3xl text-[#93c5fd]`}></i>
+                    <span className="px-2 py-1 text-xs rounded bg-[#60a5fa]/20 text-[#93c5fd]">{p.date}</span>
+                  </div>
+                  <h3 className="text-4xl md:text-5xl font-extrabold mb-4">{p.title}</h3>
+                  <p className="text-white/70 text-lg leading-relaxed mb-6">{p.summary}</p>
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {p.tags.map((t) => (
+                      <span key={t} className="px-3 py-1 rounded-full bg-white/10 text-sm">{t}</span>
+                    ))}
+                  </div>
+                  <div className="flex gap-3">
+                    <a href="#" className="px-5 py-3 rounded-lg bg-white text-[#0a0f1c] font-semibold">Repository</a>
+                    <a href="#" className="px-5 py-3 rounded-lg bg-[#0ea5e9] text-white font-semibold">Live Preview</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Right sticky slideshow larger, lowered */}
+          <div className="lg:col-span-7">
+            <div ref={detailRef} className="sticky top-28 md:top-32">
+              <div className="relative rounded-2xl overflow-hidden glass select-none">
+                {/* Main screenshot surface (placeholder) */}
+                <div
+                  className="w-full aspect-[16/9] md:aspect-[16/9] lg:aspect-[16/9] bg-white/5"
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                />
+                {/* Pagination dots */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {Array.from({ length: MAX_SLIDES }).map((_, i) => (
+                    <button
+                      key={i}
+                      aria-label={`Go to slide ${i + 1}`}
+                      onClick={() => setSlideIdx(i)}
+                      className={`w-3 h-3 rounded-full transition ${i === slideIdx ? 'bg-[#93c5fd]' : 'bg-white/30 hover:bg-white/60'}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-          {/* Project 2 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-hotel text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">Hotel Management System</h3>
-            <p className="text-gray-400 mb-4">Scalable microservices-based hotel booking platform using Docker, Hasura, Go, and PostgreSQL with JWT authentication.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">Go</span>
-              <span className="px-2 py-1 bg-purple-600 bg-opacity-20 rounded text-xs">Docker</span>
-              <span className="px-2 py-1 bg-pink-600 bg-opacity-20 rounded text-xs">GraphQL</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">March - May 2025</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-          {/* Project 3 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-red-500 to-yellow-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-chart-line text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">LAPD Crime Analysis</h3>
-            <p className="text-gray-400 mb-4">Crime trend analysis platform using SQL Server and SSIS for ETL processes with interactive dashboards.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">SQL Server</span>
-              <span className="px-2 py-1 bg-orange-600 bg-opacity-20 rounded text-xs">SSIS</span>
-              <span className="px-2 py-1 bg-green-600 bg-opacity-20 rounded text-xs">Data Analytics</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Sept - Dec 2024</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-          {/* Project 4 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-gamepad text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">2D Roguelike Game</h3>
-            <p className="text-gray-400 mb-4">Procedurally generated 2D roguelike game in C# and Unity with infinite dungeon layouts and class-based combat.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-purple-600 bg-opacity-20 rounded text-xs">C#</span>
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">Unity</span>
-              <span className="px-2 py-1 bg-green-600 bg-opacity-20 rounded text-xs">Game Dev</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Jan - Feb 2025</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-          {/* Project 5 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-network-wired text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">IP Telephony System</h3>
-            <p className="text-gray-400 mb-4">Multi-branch VoIP communication network using Cisco Packet Tracer with HSRP configurations.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">Cisco</span>
-              <span className="px-2 py-1 bg-green-600 bg-opacity-20 rounded text-xs">VoIP</span>
-              <span className="px-2 py-1 bg-red-600 bg-opacity-20 rounded text-xs">HSRP</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Nov - Dec 2024</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-          {/* Project 6 */}
-          <div className="project-card rounded-2xl p-6 card-hover">
-            <div className="h-48 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl mb-6 flex items-center justify-center">
-              <i className="fas fa-shopping-cart text-6xl text-white opacity-50"></i>
-            </div>
-            <h3 className="text-xl font-bold mb-3">University Marketplace System</h3>
-            <p className="text-gray-400 mb-4">University-focused e-commerce site with real-time chat using WebSockets and secure authentication.</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-yellow-600 bg-opacity-20 rounded text-xs">PHP</span>
-              <span className="px-2 py-1 bg-blue-600 bg-opacity-20 rounded text-xs">MySQL</span>
-              <span className="px-2 py-1 bg-green-600 bg-opacity-20 rounded text-xs">WebSockets</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Jul - Aug 2024</span>
-              <div className="flex space-x-2">
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-github"></i></a>
-                <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fas fa-external-link-alt"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="text-center mt-12">
-          <a href="#" className="inline-block px-8 py-3 glass rounded-full font-semibold hover:scale-105 transition-transform">
-            View All Projects <i className="fas fa-arrow-right ml-2"></i>
-          </a>
         </div>
       </div>
     </section>
