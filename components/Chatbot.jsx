@@ -88,7 +88,7 @@ export default function Chatbot() {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="flex w-full flex-col p-0 sm:max-w-md"
+        className="flex w-[92vw] max-w-md flex-col p-0"
         hideCloseButton
       >
         <SheetHeader className="border-b border-border p-4">
