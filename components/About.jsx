@@ -103,16 +103,22 @@ export default function About() {
               </Button>
             </div>
 
-            <div className="mt-3 flex justify-center gap-1.5">
+            <div className="mt-1 flex justify-center gap-0.5">
               {photos.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setIndex(i)}
-                  className={`h-1 rounded-full transition-all ${
-                    i === index ? 'w-6 bg-foreground' : 'w-1.5 bg-border hover:bg-muted-foreground'
-                  }`}
+                  className="group flex h-11 items-center px-1.5"
                   aria-label={`Go to photo ${i + 1}`}
-                />
+                >
+                  <span
+                    className={`block h-1 rounded-full transition-all ${
+                      i === index
+                        ? 'w-6 bg-foreground'
+                        : 'w-1.5 bg-border group-hover:bg-muted-foreground'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </div>

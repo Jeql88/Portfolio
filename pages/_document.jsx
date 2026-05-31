@@ -5,7 +5,10 @@ class MyDocument extends Document {
     return (
       <Html lang="en" className="dark">
         <Head>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+          <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+          <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link

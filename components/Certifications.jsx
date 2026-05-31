@@ -21,7 +21,7 @@ export default function Certifications() {
             key={c.title}
             className="transition-colors hover:border-primary/40"
           >
-            <CardContent className="flex items-start justify-between gap-4 p-5">
+            <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 rounded-md border border-border bg-secondary/40 p-2">
                   <Award className="h-4 w-4 text-primary" />
@@ -33,7 +33,7 @@ export default function Certifications() {
                   <p className="mt-1 text-xs text-muted-foreground">{c.issuer}</p>
                 </div>
               </div>
-              <Badge variant="outline" className="shrink-0 font-normal">
+              <Badge variant="outline" className="self-start shrink-0 font-normal sm:self-auto">
                 {c.date}
               </Badge>
             </CardContent>

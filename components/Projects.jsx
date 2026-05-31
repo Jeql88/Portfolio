@@ -28,7 +28,7 @@ function ProjectCover({ project, onExpand }) {
 
   if (!has) {
     return (
-      <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md border border-border bg-gradient-to-br from-secondary/60 via-muted/40 to-background">
+      <div className="relative flex aspect-[2/1] w-full items-center justify-center overflow-hidden rounded-md border border-border bg-gradient-to-br from-secondary/60 via-muted/40 to-background">
         <div className="flex flex-col items-center gap-2 text-muted-foreground/60">
           <ImageOff className="h-6 w-6" />
           <span className="text-[10px] uppercase tracking-widest">{project.tags[0]}</span>
@@ -41,7 +41,7 @@ function ProjectCover({ project, onExpand }) {
     <button
       type="button"
       onClick={() => onExpand(0)}
-      className="group relative aspect-video w-full overflow-hidden rounded-md border border-border bg-muted text-left"
+      className="group relative aspect-[2/1] w-full overflow-hidden rounded-md border border-border bg-muted text-left"
       aria-label={`Expand ${project.title} screenshots`}
     >
       <Image

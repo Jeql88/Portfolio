@@ -19,7 +19,7 @@ export default function Education() {
         {education.map((e) => (
           <Card key={e.id}>
             <CardHeader>
-              <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-2">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <GraduationCap className="h-4 w-4 text-primary" />
@@ -28,11 +28,11 @@ export default function Education() {
                   <p className="mt-1 text-sm text-muted-foreground">{e.degree}</p>
                   {e.gpa && <p className="mt-1 text-xs text-primary">{e.gpa}</p>}
                 </div>
-                <div className="flex flex-col items-end gap-1 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
+                <div className="flex flex-row flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground sm:flex-col sm:items-end sm:gap-x-0 sm:gap-y-1">
+                  <span className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" /> {e.dates}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     <MapPin className="h-3 w-3" /> {e.location}
                   </span>
                 </div>

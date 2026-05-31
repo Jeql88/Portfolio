@@ -10,7 +10,7 @@ export const experience = [
       'Built a Job Recruitment Platform with JWT authentication, role-based access, and an AI-powered talent recommendation pipeline using Azure OpenAI — embedding-based skill matching with cosine similarity scoring in C# (.NET).',
       'Built a Room Reservation System with real-time booking and admin dashboard; deployed all applications to Azure App Service with Azure SQL and Key Vault integration.',
     ],
-    tags: ['Vue.js', 'Node.js', '.NET', 'Azure', 'REST APIs'],
+    tags: ['Vue.js', 'C#', '.NET', 'Entity Framework Core', 'Azure', 'JWT', 'RBAC', 'REST APIs'],
   },
   {
     id: 'cisco-vp',

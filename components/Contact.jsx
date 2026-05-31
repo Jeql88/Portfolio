@@ -116,7 +116,7 @@ export default function Contact() {
             <ContactRow
               icon={Linkedin}
               label="LinkedIn"
-              value={profile.linkedin.replace('https://www.', '')}
+              value="linkedin.com/in/josh-edward-lui"
               href={profile.linkedin}
             />
           </CardContent>
@@ -191,7 +191,7 @@ export default function Contact() {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full sm:w-auto" disabled={sending}>
+              <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={sending}>
                 <Send className="h-4 w-4" />
                 {sending ? 'Sending…' : 'Send message'}
               </Button>

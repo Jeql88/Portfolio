@@ -162,7 +162,13 @@ export default function Chatbot() {
               maxLength={MAX_CHARS}
               disabled={loading}
             />
-            <Button type="submit" size="icon" disabled={loading || !input.trim()}>
+            <Button
+              type="submit"
+              size="icon"
+              className="h-11 w-11 shrink-0"
+              disabled={loading || !input.trim()}
+              aria-label="Send message"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>

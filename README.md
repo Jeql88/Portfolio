@@ -24,6 +24,12 @@ To regenerate the social-preview image after editing the tagline:
 node scripts/generate-og.mjs   # writes public/og-image.png
 ```
 
+To regenerate the browser-tab favicon and iOS home-screen icon:
+
+```bash
+node scripts/generate-favicon.mjs   # writes public/icon.svg + apple-touch-icon.png + favicon-32.png
+```
+
 Get a free Gemini API key at https://aistudio.google.com/apikey (1,500 req/day free tier).
 
 Build for production:
