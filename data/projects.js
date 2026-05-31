@@ -1,0 +1,91 @@
+export const projects = [
+  {
+    id: 'nms',
+    title: 'Network Management System',
+    role: 'Project Manager & Lead Developer',
+    dates: 'Dec 2025 – Apr 2026',
+    summary:
+      'Client-server system managing 80+ PCs with real-time monitoring, deployed via MSI rollout.',
+    bullets: [
+      'Led end-to-end development driving system architecture, team coordination, and deployment strategy.',
+      'Built the C#/.NET WPF client-server system with PostgreSQL and EF Core.',
+      'Packaged distribution as MSI installer for one-step rollout across endpoints.',
+    ],
+    tags: ['C#', '.NET', 'WPF', 'PostgreSQL', 'EF Core'],
+    repoUrl: 'https://github.com/Jeql88/iris-capstone-project',
+    liveUrl: null,
+    images: ['/images/iris1.jpg'],
+  },
+  {
+    id: 'job-recruitment',
+    title: 'AI-Powered Job Recruitment Platform',
+    role: 'Software Development Intern — SKANLOG',
+    dates: '2025 — 2026',
+    summary:
+      'Recruitment platform with embedding-based candidate matching using Azure OpenAI and cosine similarity in C#.',
+    bullets: [
+      'Built JWT authentication and role-based access control across the API surface.',
+      'Implemented an AI talent recommendation pipeline: skill embeddings + cosine similarity scoring in .NET.',
+      'Deployed to Azure App Service with Azure SQL and Key Vault for secret management.',
+    ],
+    tags: ['Vue.js', '.NET', 'Azure OpenAI', 'Embeddings', 'Azure SQL', 'JWT'],
+    repoUrl: null,
+    liveUrl: null,
+    images: ['/images/talent1.png', '/images/talent2.png'],
+  },
+  {
+    id: 'room-reservation',
+    title: 'Room Reservation System',
+    role: 'Software Development Intern — SKANLOG',
+    dates: 'Nov – Dec 2025',
+    summary:
+      'Real-time room booking platform with admin dashboard, deployed on Azure.',
+    bullets: [
+      'Built real-time booking flow with conflict detection and an admin dashboard for occupancy management.',
+      'Deployed to Azure App Service with Azure SQL and Key Vault.',
+    ],
+    tags: ['Vue.js', '.NET', 'Azure App Service', 'Azure SQL', 'Azure Key Vault'],
+    repoUrl: null,
+    liveUrl: null,
+    images: [
+      '/images/room1.png',
+      '/images/room2.png',
+      '/images/room3.png',
+      '/images/room4.png',
+    ],
+  },
+  {
+    id: 'collab-drawing',
+    title: 'Collaborative Drawing Web App',
+    role: 'Frontend & Backend Developer',
+    dates: 'May – Jun 2025',
+    summary:
+      'Real-time collaborative whiteboard with persistent sessions and live multi-user sync.',
+    bullets: [
+      'Built with Node.js, Express.js, React.js, and Socket.IO for sub-100ms canvas sync.',
+      'Integrated MongoDB for session persistence and replay across reconnects.',
+      'Dockerized for one-command deployment.',
+    ],
+    tags: ['Node.js', 'Express', 'React', 'Socket.IO', 'MongoDB', 'Docker'],
+    repoUrl: 'https://github.com/Jeql8/whitebored-frontend',
+    liveUrl: null,
+    images: ['/images/whiteboard1.png', '/images/whiteboard2.png', '/images/whiteboard3.png'],
+  },
+  {
+    id: 'hotel-mgmt',
+    title: 'Hotel Management System',
+    role: 'Project Lead',
+    dates: 'Mar – May 2025',
+    summary:
+      'Microservices-based hotel booking platform with containerized services and role-based access.',
+    bullets: [
+      'Led architecture and task delegation across the team.',
+      'Built Dockerized services using Go, Hasura, and PostgreSQL.',
+      'Implemented RBAC and JWT authentication across the service mesh.',
+    ],
+    tags: ['Go', 'Hasura', 'PostgreSQL', 'Docker', 'Microservices', 'JWT'],
+    repoUrl: 'https://github.com/choijans/Hotel-Booking-System',
+    liveUrl: null,
+    images: [],
+  },
+];

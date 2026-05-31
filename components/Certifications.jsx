@@ -1,76 +1,45 @@
-import React from 'react';
+import { Award } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { certifications } from '@/data/certifications';
 
-const Certifications = () => (
-  <section className="py-20">
-    <div className="container mx-auto px-6">
-      <div className="text-center mb-16">
-        <h2 className="text-5xl font-bold mb-4 gradient-text">Certifications & Achievements</h2>
-        <p className="text-xl text-gray-400">Continuous learning and professional development</p>
+export default function Certifications() {
+  return (
+    <section id="certifications" className="container py-24 md:py-32">
+      <div className="mb-12 max-w-2xl">
+        <p className="mb-3 text-sm font-medium uppercase tracking-widest text-primary">
+          Certifications
+        </p>
+        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+          Credentials & awards
+        </h2>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Certification 1 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fas fa-chart-bar text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Data Analyst Associate</h3>
-          <p className="text-gray-300 mb-2">DataCamp</p>
-          <p className="text-gray-400 text-sm mb-3">May 2024 - May 2026</p>
-          <p className="text-gray-500 text-sm">Data cleaning, visualization, and statistical analysis using Python and SQL</p>
-        </div>
-        {/* Certification 2 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fas fa-network-wired text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">CCNAv7: Switching, Routing, and Wireless</h3>
-          <p className="text-gray-300 mb-2">Cisco Networking Academy</p>
-          <p className="text-gray-400 text-sm mb-3">January 2025</p>
-          <p className="text-gray-500 text-sm">LAN/WAN, routing protocols, VLANs, wireless technologies</p>
-        </div>
-        {/* Certification 3 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fab fa-python text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Python and AWS Elective</h3>
-          <p className="text-gray-300 mb-2">Zuitt</p>
-          <p className="text-gray-400 text-sm mb-3">May 2025</p>
-          <p className="text-gray-500 text-sm">Python scripting and cloud computing fundamentals</p>
-        </div>
-        {/* Achievement 1 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fas fa-trophy text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Global Business Summer Camp</h3>
-          <p className="text-gray-300 mb-2">Saigon Business School, Vietnam</p>
-          <p className="text-gray-400 text-sm mb-3">3rd Place Winner • April 2025</p>
-          <p className="text-gray-500 text-sm">Innovation challenge for mobile learning ecosystem</p>
-        </div>
-        {/* Program 1 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fas fa-globe-asia text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Summer School Program</h3>
-          <p className="text-gray-300 mb-2">Asian Institute of Technology, Thailand</p>
-          <p className="text-gray-400 text-sm mb-3">August 2024</p>
-          <p className="text-gray-500 text-sm">Innovation, sustainability, and digital transformation</p>
-        </div>
-        {/* Certification 4 */}
-        <div className="glass p-6 rounded-2xl card-hover">
-          <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-            <i className="fas fa-globe text-2xl text-white"></i>
-          </div>
-          <h3 className="text-lg font-bold mb-2">Understanding the Internet</h3>
-          <p className="text-gray-300 mb-2">Keio University & APIE</p>
-          <p className="text-gray-400 text-sm mb-3">April 2024</p>
-          <p className="text-gray-500 text-sm">Internet architecture, infrastructure, and governance</p>
-        </div>
-      </div>
-    </div>
-  </section>
-);
 
-export default Certifications; 
+      <div className="grid gap-3 md:grid-cols-2">
+        {certifications.map((c) => (
+          <Card
+            key={c.title}
+            className="transition-colors hover:border-primary/40"
+          >
+            <CardContent className="flex items-start justify-between gap-4 p-5">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 rounded-md border border-border bg-secondary/40 p-2">
+                  <Award className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium leading-tight text-foreground">
+                    {c.title}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">{c.issuer}</p>
+                </div>
+              </div>
+              <Badge variant="outline" className="shrink-0 font-normal">
+                {c.date}
+              </Badge>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}

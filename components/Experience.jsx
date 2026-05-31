@@ -1,97 +1,81 @@
-import React, { useEffect } from 'react';
+import { Briefcase, MapPin, Calendar } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { experience } from '@/data/experience';
+import { useInView } from '@/lib/use-in-view';
 
-const Experience = () => {
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.gsap && window.ScrollTrigger) {
-      const gsap = window.gsap;
-      const ScrollTrigger = window.ScrollTrigger;
-      gsap.registerPlugin(ScrollTrigger);
-      gsap.utils.toArray('.timeline-item').forEach((item, i) => {
-        gsap.fromTo(item,
-          { x: -100, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.8,
-            delay: i * 0.2,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: item,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse'
-            }
-          }
-        );
-      });
-    }
-  }, []);
-
+function TimelineItem({ item, index }) {
+  const [ref, inView] = useInView();
   return (
-    <section id="experience" className="py-20 bg-gray-900">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 gradient-text">Experience & Leadership</h2>
-          <p className="text-xl text-gray-400">Building the future through education and innovation</p>
-        </div>
-        <div className="max-w-4xl mx-auto">
-          {/* Timeline */}
-          <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-700"></div>
-            {/* Experience Item 1 */}
-            <div className="timeline-item relative pl-20 pb-12">
-              <div className="glass p-6 rounded-2xl">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-100">Vice President of Internal Relations</h3>
-                    <p className="text-gray-300">USC CISCO Student Council</p>
-                  </div>
-                  <span className="text-sm text-gray-500 bg-gray-800 px-3 py-1 rounded-full">2025 - Current</span>
-                </div>
-                <ul className="text-gray-400 space-y-2">
-                  <li>• Oversee coordination and execution of internal council operations and school events</li>
-                  <li>• Lead internal communication strategies with clear documentation for student-teacher issues</li>
-                  <li>• Coordinate tech-related events and initiatives</li>
-                </ul>
-              </div>
+    <div
+      ref={ref}
+      className={`relative transition-all duration-700 ease-out ${
+        inView ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+      }`}
+      style={{ transitionDelay: `${index * 120}ms` }}
+    >
+      <span className="absolute -left-[33px] top-6 flex h-4 w-4 items-center justify-center rounded-full border-2 border-foreground bg-background md:-left-[37px]">
+        <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
+      </span>
+      <Card>
+        <CardHeader>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Briefcase className="h-4 w-4 text-muted-foreground" />
+                {item.role}
+              </CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{item.org}</p>
             </div>
-            {/* Experience Item 2 */}
-            <div className="timeline-item relative pl-20 pb-12">
-              <div className="glass p-6 rounded-2xl">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-100">Internal Relations Officer</h3>
-                    <p className="text-gray-300">USC CISCO Student Council</p>
-                  </div>
-                  <span className="text-sm text-gray-500 bg-gray-800 px-3 py-1 rounded-full">2024 - 2025</span>
-                </div>
-                <ul className="text-gray-400 space-y-2">
-                  <li>• Organized and facilitated internal communication between council members</li>
-                  <li>• Coordinated with various student organizations</li>
-                  <li>• Managed tech-related events and activities</li>
-                </ul>
-              </div>
-            </div>
-            {/* Education Item */}
-            <div className="timeline-item relative pl-20 pb-12">
-              <div className="glass p-6 rounded-2xl">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-100">BSIT Student - Dean's List</h3>
-                    <p className="text-gray-300">University of San Carlos</p>
-                  </div>
-                  <span className="text-sm text-gray-500 bg-gray-800 px-3 py-1 rounded-full">2023 - Current</span>
-                </div>
-                <div className="text-gray-400">
-                  <p className="mb-2">GPA: 1.36 • Dean's List: 2023-2025</p>
-                  <p>Pursuing Bachelor of Science in Information Technology with focus on full-stack development, data analysis, and network infrastructure.</p>
-                </div>
-              </div>
+            <div className="flex flex-col items-end gap-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" /> {item.dates}
+              </span>
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> {item.location}
+              </span>
             </div>
           </div>
-        </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            {item.bullets.map((b, i) => (
+              <li key={i} className="flex gap-2">
+                <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-muted-foreground" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-1.5">
+            {item.tags.map((t) => (
+              <Badge key={t} variant="outline" className="font-normal">
+                {t}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default function Experience() {
+  return (
+    <section id="experience" className="container py-24 md:py-32">
+      <div className="mb-12 max-w-2xl">
+        <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          Experience
+        </p>
+        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+          Where I&apos;ve worked & led
+        </h2>
+      </div>
+
+      <div className="relative space-y-6 border-l border-border pl-6 md:pl-8">
+        {experience.map((item, i) => (
+          <TimelineItem key={item.id} item={item} index={i} />
+        ))}
       </div>
     </section>
   );
-};
-
-export default Experience; 
+}

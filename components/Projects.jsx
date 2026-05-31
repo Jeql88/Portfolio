@@ -1,128 +1,238 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import {
+  Github,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  ImageOff,
+  Maximize2,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { projects } from '@/data/projects';
+import { useInView } from '@/lib/use-in-view';
 
-const PROJECTS = [
-  { id: 'p6', title: 'Collaborative Drawing Web App', date: '2025-06', tags: ['React.js', 'Socket.IO', 'MongoDB'], icon: 'fas fa-paint-brush', summary: 'A realtime whiteboard with collaborative drawing, session persistence, and replayable strokes.' },
-  { id: 'p5', title: 'Hotel Management System', date: '2025-05', tags: ['Go', 'Docker', 'GraphQL'], icon: 'fas fa-hotel', summary: 'Microservices booking, containerized services, role-based access, and JWT auth.' },
-  { id: 'p4', title: '2D Roguelike Game', date: '2025-02', tags: ['C#', 'Unity', 'Game Dev'], icon: 'fas fa-gamepad', summary: 'Procedural generation, itemization, and a satisfying combat loop with bosses.' },
-  { id: 'p3', title: 'LAPD Crime Analysis', date: '2024-12', tags: ['SQL Server', 'SSIS', 'Analytics'], icon: 'fas fa-chart-line', summary: 'ETL pipelines with SSIS, star-schema warehouse, and storytelling dashboards.' },
-  { id: 'p2', title: 'IP Telephony System', date: '2024-12', tags: ['Cisco', 'VoIP', 'HSRP'], icon: 'fas fa-network-wired', summary: 'Multi-branch VoIP with HSRP, QoS, dial plans, and resilient network edges.' },
-  { id: 'p1', title: 'University Marketplace System', date: '2024-08', tags: ['PHP', 'MySQL', 'WebSockets'], icon: 'fas fa-shopping-cart', summary: 'Campus e-commerce with real-time chat, escrow-like orders, and admin tools.' },
-].sort((a,b) => (a.date < b.date ? 1 : -1));
+function ProjectCover({ project, onExpand }) {
+  const imgs = project.images || [];
+  const has = imgs.length > 0;
 
-const MAX_SLIDES = 5; // placeholder count per project
-
-const Projects = () => {
-  const [activeId, setActiveId] = useState(PROJECTS[0].id);
-  const [slideIdx, setSlideIdx] = useState(0);
-  const detailRef = useRef(null);
-  const swipeRef = useRef({ x: 0, y: 0 });
-  const autoRef = useRef(null);
-
-  useEffect(() => {
-    const sections = document.querySelectorAll('[data-project-id]');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('data-project-id');
-          setActiveId(id);
-        }
-      });
-    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0.1 });
-
-    sections.forEach(s => io.observe(s));
-    return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    // Reset slide and animate panel when project changes
-    setSlideIdx(0);
-    if (typeof window !== 'undefined' && window.gsap && detailRef.current) {
-      const gsap = window.gsap;
-      gsap.fromTo(detailRef.current, { y: 16, opacity: 0.9 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out' });
-    }
-    // Auto-advance
-    if (autoRef.current) clearInterval(autoRef.current);
-    autoRef.current = setInterval(() => setSlideIdx(i => (i + 1) % MAX_SLIDES), 3500);
-    return () => { if (autoRef.current) clearInterval(autoRef.current); };
-  }, [activeId]);
-
-  const active = PROJECTS.find(p => p.id === activeId) || PROJECTS[0];
-
-  const handleTouchStart = (e) => {
-    const t = e.touches[0];
-    swipeRef.current = { x: t.clientX, y: t.clientY };
-  };
-  const handleTouchEnd = (e) => {
-    const t = e.changedTouches[0];
-    const dx = t.clientX - swipeRef.current.x;
-    const dy = t.clientY - swipeRef.current.y;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-      setSlideIdx((i) => (dx < 0 ? (i + 1) % MAX_SLIDES : (i - 1 + MAX_SLIDES) % MAX_SLIDES));
-    }
-  };
-
-  return (
-    <section id="projects" className="py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold mb-4 gradient-text">Projects</h2>
-          <p className="text-xl text-gray-400">Newest to oldest. Scroll to explore.</p>
-        </div>
-
-        <div className="grid lg:grid-cols-12 gap-12 xl:gap-16">
-          {/* Left scroll list narrower, aligned to top */}
-          <div className="lg:col-span-4 xl:col-span-5 space-y-20">
-            {PROJECTS.map((p) => (
-              <article key={p.id} data-project-id={p.id} className="min-h-[80vh] flex items-start">
-                <div className="max-w-xl">
-                  <div className="flex items-center gap-3 mb-4">
-                    <i className={`${p.icon} text-3xl text-[#93c5fd]`}></i>
-                    <span className="px-2 py-1 text-xs rounded bg-[#60a5fa]/20 text-[#93c5fd]">{p.date}</span>
-                  </div>
-                  <h3 className="text-4xl md:text-5xl font-extrabold mb-4">{p.title}</h3>
-                  <p className="text-white/70 text-lg leading-relaxed mb-6">{p.summary}</p>
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {p.tags.map((t) => (
-                      <span key={t} className="px-3 py-1 rounded-full bg-white/10 text-sm">{t}</span>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <a href="#" className="px-5 py-3 rounded-lg bg-white text-[#0a0f1c] font-semibold">Repository</a>
-                    <a href="#" className="px-5 py-3 rounded-lg bg-[#0ea5e9] text-white font-semibold">Live Preview</a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Right sticky preview wider */}
-          <div className="lg:col-span-8 xl:col-span-7">
-            <div ref={detailRef} className="sticky top-24 md:top-28 lg:top-32">
-              <div className="relative rounded-2xl overflow-hidden glass select-none">
-                {/* Main screenshot surface (placeholder) */}
-                <div
-                  className="w-full aspect-[16/9] md:aspect-[16/9] lg:aspect-[16/9] bg-white/5"
-                  onTouchStart={handleTouchStart}
-                  onTouchEnd={handleTouchEnd}
-                />
-                {/* Pagination dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                  {Array.from({ length: MAX_SLIDES }).map((_, i) => (
-                    <button
-                      key={i}
-                      aria-label={`Go to slide ${i + 1}`}
-                      onClick={() => setSlideIdx(i)}
-                      className={`w-3 h-3 rounded-full transition ${i === slideIdx ? 'bg-[#93c5fd]' : 'bg-white/30 hover:bg-white/60'}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+  if (!has) {
+    return (
+      <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-md border border-border bg-gradient-to-br from-secondary/60 via-muted/40 to-background">
+        <div className="flex flex-col items-center gap-2 text-muted-foreground/60">
+          <ImageOff className="h-6 w-6" />
+          <span className="text-[10px] uppercase tracking-widest">{project.tags[0]}</span>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onExpand(0)}
+      className="group relative aspect-video w-full overflow-hidden rounded-md border border-border bg-muted text-left"
+      aria-label={`Expand ${project.title} screenshots`}
+    >
+      <Image
+        src={imgs[0]}
+        alt={`${project.title} screenshot`}
+        fill
+        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+      <span className="pointer-events-none absolute bottom-3 right-3 flex translate-y-1 items-center gap-1.5 rounded-md border border-border bg-background/90 px-2.5 py-1 text-[11px] font-medium text-foreground opacity-0 shadow-sm backdrop-blur-sm transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+        <Maximize2 className="h-3 w-3" />
+        {imgs.length > 1 ? `${imgs.length} screenshots` : 'View full size'}
+      </span>
+    </button>
+  );
+}
+
+function ProjectLinks({ project }) {
+  const hasLinks = project.repoUrl || project.liveUrl;
+  if (!hasLinks) return null;
+  return (
+    <CardFooter className="gap-1 border-t border-border pt-4">
+      {project.repoUrl && (
+        <Button asChild variant="ghost" size="sm">
+          <a href={project.repoUrl} target="_blank" rel="noreferrer">
+            <Github className="h-4 w-4" /> Code
+          </a>
+        </Button>
+      )}
+      {project.liveUrl && (
+        <Button asChild variant="ghost" size="sm">
+          <a href={project.liveUrl} target="_blank" rel="noreferrer">
+            <ExternalLink className="h-4 w-4" /> Live
+          </a>
+        </Button>
+      )}
+    </CardFooter>
+  );
+}
+
+function ProjectCard({ project, index, onExpand }) {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${
+        inView ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+      }`}
+      style={{ transitionDelay: `${(index % 3) * 100}ms` }}
+    >
+      <Card className="flex h-full flex-col overflow-hidden transition-colors hover:border-foreground/30">
+        <CardHeader className="space-y-3">
+          <ProjectCover project={project} onExpand={(i) => onExpand(project, i)} />
+          <CardTitle className="text-lg leading-tight">{project.title}</CardTitle>
+          <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+            <span>{project.role}</span>
+            <span className="text-muted-foreground/40">•</span>
+            <span>{project.dates}</span>
+          </div>
+          <CardDescription className="text-sm leading-relaxed">{project.summary}</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-1 flex-col gap-4">
+          <ul className="space-y-2 text-sm text-muted-foreground">
+            {project.bullets.map((b, i) => (
+              <li key={i} className="flex gap-2">
+                <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-muted-foreground" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-2">
+            {project.tags.map((t) => (
+              <Badge key={t} variant="outline" className="font-normal">
+                {t}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+
+        <ProjectLinks project={project} />
+      </Card>
+    </div>
+  );
+}
+
+function Lightbox({ project, startIndex, onClose }) {
+  const [i, setI] = useState(startIndex || 0);
+  const imgs = project?.images || [];
+
+  useEffect(() => {
+    setI(startIndex || 0);
+  }, [project, startIndex]);
+
+  useEffect(() => {
+    if (!project) return;
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight') setI((p) => (p + 1) % imgs.length);
+      if (e.key === 'ArrowLeft') setI((p) => (p - 1 + imgs.length) % imgs.length);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [project, imgs.length]);
+
+  if (!project) return null;
+
+  return (
+    <Dialog open={!!project} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="border-0 bg-transparent shadow-none p-0">
+        <DialogTitle className="sr-only">{project.title} screenshots</DialogTitle>
+        <div className="relative flex h-[90vh] w-full items-center justify-center">
+          {imgs.map((src, idx) => (
+            <Image
+              key={src}
+              src={src}
+              alt={`${project.title} screenshot ${idx + 1}`}
+              fill
+              sizes="100vw"
+              className={`object-contain transition-opacity duration-300 ${
+                idx === i ? 'opacity-100' : 'opacity-0'
+              }`}
+              priority={idx === startIndex}
+            />
+          ))}
+
+          {imgs.length > 1 && (
+            <>
+              <button
+                onClick={() => setI((p) => (p - 1 + imgs.length) % imgs.length)}
+                aria-label="Previous"
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-border bg-background/80 p-3 backdrop-blur transition-colors hover:bg-background"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setI((p) => (p + 1) % imgs.length)}
+                aria-label="Next"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-border bg-background/80 p-3 backdrop-blur transition-colors hover:bg-background"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
+
+          <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-border bg-background/80 px-4 py-2 backdrop-blur">
+            <span className="text-xs font-medium text-foreground">{project.title}</span>
+            {imgs.length > 1 && (
+              <span className="text-xs text-muted-foreground">
+                {i + 1} / {imgs.length}
+              </span>
+            )}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default function Projects() {
+  const [lightbox, setLightbox] = useState({ project: null, index: 0 });
+
+  return (
+    <section id="projects" className="container py-24 md:py-32">
+      <div className="mb-12 max-w-2xl">
+        <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          Projects
+        </p>
+        <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+          What I&apos;ve built
+        </h2>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Click any screenshot to view it full-size.
+        </p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((p, i) => (
+          <ProjectCard
+            key={p.id}
+            project={p}
+            index={i}
+            onExpand={(project, idx) => setLightbox({ project, index: idx })}
+          />
+        ))}
+      </div>
+
+      <Lightbox
+        project={lightbox.project}
+        startIndex={lightbox.index}
+        onClose={() => setLightbox({ project: null, index: 0 })}
+      />
     </section>
   );
-};
-
-export default Projects; 
+}

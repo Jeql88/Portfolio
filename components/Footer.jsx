@@ -1,31 +1,33 @@
-import React from 'react';
+import { Github, Linkedin, Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { profile } from '@/data/profile';
 
-const Footer = () => (
-  <footer className="py-12 bg-gray-900">
-    <div className="container mx-auto px-6">
-      <div className="text-center">
-        <div className="text-3xl font-bold gradient-text mb-4">Josh Edward Lui</div>
-        <p className="text-gray-400 mb-6">Aspiring Full Stack Developer & Council Leader</p>
-        <div className="flex justify-center space-x-6 mb-6">
-          <a href="#" className="text-gray-400 hover:text-white transition-colors">
-            <i className="fab fa-linkedin text-xl"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors">
-            <i className="fab fa-github text-xl"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors">
-            <i className="fab fa-twitter text-xl"></i>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors">
-            <i className="fab fa-instagram text-xl"></i>
-          </a>
-        </div>
-        <p className="text-gray-500 text-sm">
-          © 2025 Josh Edward Lui. All rights reserved.
+export default function Footer() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="border-t border-border">
+      <div className="container flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+        <p className="text-sm text-muted-foreground">
+          © {year} {profile.name}. Built with Next.js + shadcn/ui.
         </p>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="ghost" size="icon">
+            <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+              <Github className="h-4 w-4" />
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="icon">
+            <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <Linkedin className="h-4 w-4" />
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="icon">
+            <a href={`mailto:${profile.email}`} aria-label="Email">
+              <Mail className="h-4 w-4" />
+            </a>
+          </Button>
+        </div>
       </div>
-    </div>
-  </footer>
-);
-
-export default Footer; 
+    </footer>
+  );
+}

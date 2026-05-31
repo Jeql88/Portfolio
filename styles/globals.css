@@ -2,72 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add any custom styles here */
-html {
-  scroll-behavior: smooth;
+@layer base {
+  :root {
+    --background: 240 6% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 5% 9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 5% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 96%;
+    --primary-foreground: 240 6% 10%;
+
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 4% 12%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 240 5% 65%;
+
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #0a0f1c; /* deep navy */
-  color: #e5e7eb; /* light gray text */
+@layer utilities {
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .hero-glow {
+    background:
+      radial-gradient(circle at 20% 0%, hsl(0 0% 100% / 0.06), transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(0 0% 100% / 0.04), transparent 50%);
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
-
-/* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-* { font-family: 'Inter', sans-serif; }
-
-/* Hide scrollbar but keep scroll */
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Headings with white→blue tint */
-.gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Blue-tinted glass */
-.glass {
-  background: rgba(10, 15, 28, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(147, 197, 253, 0.15);
-}
-
-/* Subtle motion cards */
-.card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(2, 6, 23, 0.8); }
-
-.floating { animation: float 6s ease-in-out infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0px) } 50% { transform: translateY(-20px) } }
-
-.parallax-bg { background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover; }
-
-/* Skill bars: white→blue */
-.skill-bar { height: 6px; background: linear-gradient(90deg, #ffffff, #60a5fa); transform-origin: left; }
-
-/* Timeline dot: cool gray→blue ring */
-.timeline-item::before {
-  content: '';
-  position: absolute; left: -8px; top: 0; width: 16px; height: 16px; border-radius: 50%;
-  background: linear-gradient(135deg, #cbd5e1, #60a5fa);
-  border: 3px solid #0a0f1c; box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.12);
-}
-
-/* Project card: cooler navy glass */
-.project-card { background: linear-gradient(135deg, rgba(15,23,42,0.55) 0%, rgba(2,6,23,0.45) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(147,197,253,0.12); }
-
-/* Hero background: animated deep-navy → blue shift */
-.hero-bg {
-  background: linear-gradient(135deg, #0a0f1c 0%, #0b1220 30%, #0b1c36 60%, #0a0f1c 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 18s ease infinite;
-}
-@keyframes gradientShift { 0%, 100% { background-position: 0% 50% } 50% { background-position: 100% 50% } }
-
-/* Tech stack hover: blue accent */
-.tech-stack-item { transition: all 0.3s ease; }
-.tech-stack-item:hover { transform: scale(1.1) rotate(5deg); color: #60a5fa; }
