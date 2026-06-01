@@ -8,7 +8,6 @@ import { profile } from '@/data/profile';
 const photos = [
   '/images/aboutme2.jpg',
   '/images/aboutme3.jpg',
-  '/images/aboutme4.jpg',
   '/images/aboutme5.jpg',
   '/images/aboutme6.jpg',
   '/images/aboutme1.jpg',
@@ -51,7 +50,7 @@ export default function About() {
       </div>
 
       <Card>
-        <CardContent className="grid gap-10 p-6 md:grid-cols-[1fr_1fr] md:p-10">
+        <CardContent className="grid gap-10 px-6 pt-6 pb-2 md:grid-cols-[1fr_1fr] md:px-10 md:pt-10 md:pb-3">
           <div className="space-y-5 text-base leading-relaxed text-muted-foreground">
             {profile.bio.map((para, i) => (
               <p key={i}>{para}</p>
