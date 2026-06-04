@@ -101,7 +101,7 @@ export const projects = [
       "Tailwind CSS",
     ],
     repoUrl: "https://github.com/Jeql88/whiteboard-app",
-    liveUrl: "https://whiteboard-app-8loo.onrender.com",
+    liveUrl: "https://whitebored-client.vercel.app",
     images: [
       "/images/whiteboard1.png",
       "/images/whiteboard2.png",
